@@ -29,10 +29,10 @@
         </select>
     <input type="submit" id="submit-search" />
     </form>
-  <table id="data-table">
+  <table>
       <thead>
           <tr>
-              <th><a href="javascript:myFunction()">State</a></th>
+              <th>State</th>
               <th>State FIPS Code</th>
               <th>District ID</th>
               <th>Name</th>
@@ -42,7 +42,7 @@
               <th>Poverty Rate</th>
           </tr>
       </thead>
-      <tbody>
+      <tbody id="data-table">
           <tr>
               <td>AL</td>
               <td>01</td>
@@ -58,9 +58,30 @@
     
 </body>
     <script>
-        function myFunction() {
-            window.alert("Fill in this code please!");
+		let table = document.getElementById("data-table");
+		
+        function createTable() {
+            let row = table.insertRow(); //Insert new row
+			
+			let allCells = getNextRow();
+			//Add 8 cells
+			for (let i = 0; i<8; i++)
+			{
+				let cell = row.insertCell();
+				
+				cell.innerHTML = allCells[i];
+			}
         }
+		
+		function getNextRow() {
+			//Returns array, each index next cell
+			
+			return ["M", "R", "H", "A", "M", "M", "E", "R"];
+		}
+		
+		window.addEventListener('load', event => {
+			createTable();
+		});
     </script>
 </html>
 
