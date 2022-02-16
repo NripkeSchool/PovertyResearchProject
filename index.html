@@ -28,6 +28,11 @@
             <option value="not-conains">Does Not Contain</option>
         </select>
     <input type="submit" id="submit-search" />
+	<select name="Table Size" id="table-size" onchange="changeSize()">
+            <option value="10">10 Rows</option>
+            <option value="25">25 Rows</option>
+            <option value="50">50 Rows</option>
+    </select>
     </form>
   <table>
       <thead>
@@ -43,7 +48,7 @@
           </tr>
       </thead>
       <tbody id="data-table">
-          <tr>
+          <!--<tr>
               <td>AL</td>
               <td>01</td>
               <td>00190</td>
@@ -53,12 +58,14 @@
               <td>669</td>
               <td>9.84%</td>
           </tr>
+		  -->
       </tbody>
   </table>
     
 </body>
     <script>
 		let table = document.getElementById("data-table");
+		let size = 10;
 		
         function createTable() {
             let row = table.insertRow(); //Insert new row
@@ -73,14 +80,36 @@
 			}
         }
 		
+		function DESTROY()
+		{
+			for (let i = 0; i<size; i++)
+			{
+				table.deleteRow(0);
+			}
+		}
+		
 		function getNextRow() {
 			//Returns array, each index next cell
 			
 			return ["M", "R", "H", "A", "M", "M", "E", "R"];
 		}
 		
+		function changeSize()
+		{
+			DESTROY();
+			size = document.getElementById("table-size").value;
+			for (let i = 0; i<size; i++)
+			{
+				createTable();
+			}
+		}
+		
 		window.addEventListener('load', event => {
-			createTable();
+			
+			for (let i = 0; i<size; i++)
+			{
+				createTable();
+			}
 		});
     </script>
 </html>
