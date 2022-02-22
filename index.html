@@ -12,6 +12,8 @@
         <p> <em> Brought to you by the US Census Bureau </em></p>
     </div>
     
+	<div id="test">
+	</div>
     <form id="search" onSubmit="myFunction()">
         <lable for="search-column">In Column:</lable>
         <select name="column" id="search-column">
@@ -62,22 +64,49 @@
       </tbody>
   </table>
     
+	<button class="buttons" onclick="nextPage()"> Show Next Page </button>
 </body>
     <script>
 		let table = document.getElementById("data-table");
 		let size = 10;
+		let topPos = 0;
+		
+		const information = {
+			state: [],
+			sCode: [],
+			dID: [],
+			name: [],
+			totalPop: [],
+			kidPop: [],
+			povNum: []
+		};
+		
+		function readFileA () {
+		
+		}
+		
+		function nextPage()
+		{
+			topPos += size;
+			DESTROY();
+			createTable();
+		}
 		
         function createTable() {
-            let row = table.insertRow(); //Insert new row
-			
-			let allCells = getNextRow();
-			//Add 8 cells
-			for (let i = 0; i<8; i++)
+		    for (let times = 0; times<size; times++)
 			{
-				let cell = row.insertCell();
+				let row = table.insertRow(); //Insert new row
+				let allCells = getNextRow(topPos + times);
+				//Add 8 cells
+			
+				for (let i = 0; i<8; i++)
+				{
+					let cell = row.insertCell();
 				
-				cell.innerHTML = allCells[i];
+					cell.innerHTML = allCells[i];
+				}
 			}
+			
         }
 		
 		function DESTROY()
@@ -88,7 +117,7 @@
 			}
 		}
 		
-		function getNextRow() {
+		function getNextRow(position) {
 			//Returns array, each index next cell
 			
 			return ["M", "R", "H", "A", "M", "M", "E", "R"];
@@ -98,18 +127,11 @@
 		{
 			DESTROY();
 			size = document.getElementById("table-size").value;
-			for (let i = 0; i<size; i++)
-			{
-				createTable();
-			}
+			createTable();
 		}
 		
-		window.addEventListener('load', event => {
-			
-			for (let i = 0; i<size; i++)
-			{
+		window.addEventListener('load', event => {	
 				createTable();
-			}
 		});
     </script>
 </html>
