@@ -37,7 +37,7 @@
     </select>
     </form>
   <table>
-      <thead>
+      <thead class="HEADER">
           <tr>
               <th>State</th>
               <th>State FIPS Code</th>
@@ -81,8 +81,21 @@
 			povNum: []
 		};
 		
-		function readFileA () {
+		function loadDoc() {
+			const xhttp = new XMLHttpRequest();
+			xhttp.onload = function() {
+				readFile(this.responseText);
+			}
+			xhttp.open("GET", "DATA.txt");
+			xhttp.send();
+		}
 		
+		function readFile(message) {
+			for (let i = 0; i<100; i++)
+			{
+				document.getElementById("test").innerHTML = document.getElementById("test").innerHTML + message.charAt(i);
+			}
+			
 		}
 		
 		function nextPage()
@@ -132,6 +145,7 @@
 		
 		window.addEventListener('load', event => {	
 				createTable();
+				loadDoc();
 		});
     </script>
 </html>
