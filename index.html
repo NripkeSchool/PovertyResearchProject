@@ -78,9 +78,9 @@
 			name: [],
 			totalPop: [],
 			kidPop: [],
-			povNum: [],
-			allInfo: [this.state, this.sCore, this.dID, this.name, this.totalPop, this.kidPop, this.povNum]
+			povNum: []
 		};
+		const allInformation = [information.state, information.sCore, information.dID, information.name, information.totalPop, information.kidPop, information.povNum]
 		
 		function loadDoc() {
 			const xhttp = new XMLHttpRequest();
@@ -97,7 +97,7 @@
 				let info = message[i].split(",");
 				for (let j = 0; j<7; j++)
 				{
-					information.allInfo[j].push(info[j]);
+					allInformation[j].push(info[j]);
 				}
 			}
 		}
