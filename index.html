@@ -78,24 +78,28 @@
 			name: [],
 			totalPop: [],
 			kidPop: [],
-			povNum: []
+			povNum: [],
+			allInfo: [this.state, this.sCore, this.dID, this.name, this.totalPop, this.kidPop, this.povNum]
 		};
 		
 		function loadDoc() {
 			const xhttp = new XMLHttpRequest();
 			xhttp.onload = function() {
-				readFile(this.responseText);
+				readFile(this.responseText.split("\n"));
 			}
 			xhttp.open("GET", "DATA.txt");
 			xhttp.send();
 		}
 		
 		function readFile(message) {
-			for (let i = 0; i<100; i++)
+			for (let i = 0; i<message.length; i++)
 			{
-				document.getElementById("test").innerHTML = document.getElementById("test").innerHTML + message.charAt(i);
+				let info = message[i].split(",");
+				for (let j = 0; j<7; j++)
+				{
+					information.allInfo[j].push(info[j]);
+				}
 			}
-			
 		}
 		
 		function nextPage()
