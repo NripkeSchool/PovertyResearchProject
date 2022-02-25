@@ -78,16 +78,17 @@
 			name: [],
 			totalPop: [],
 			kidPop: [],
-			povNum: []
+			povNum: [],
+			povRate: []
 		};
-		const allInformation = [information.state, information.sCore, information.dID, information.name, information.totalPop, information.kidPop, information.povNum]
-		
+		const allInformation = [information.state, information.sCode, information.dID, information.name, information.totalPop, information.kidPop, information.povNum, information.povRate];
+	
 		function loadDoc() {
 			const xhttp = new XMLHttpRequest();
 			xhttp.onload = function() {
 				readFile(this.responseText.split("\n"));
 			}
-			xhttp.open("GET", "DATA.txt");
+			xhttp.open("GET", "DATA.txt", false);
 			xhttp.send();
 		}
 		
@@ -95,10 +96,12 @@
 			for (let i = 0; i<message.length; i++)
 			{
 				let info = message[i].split(",");
-				for (let j = 0; j<7; j++)
+				
+				for (let j = 0; j<info.length; j++)
 				{
 					allInformation[j].push(info[j]);
 				}
+				allInformation[7][i] = (allInformation[6][i] / allInformation[5][i])*100;
 			}
 		}
 		
@@ -136,8 +139,13 @@
 		
 		function getNextRow(position) {
 			//Returns array, each index next cell
+			let row = ["", "", "", "", "", "", "", ""];
+			for (let i = 0; i<8; i++)
+			{
+				row[i] = allInformation[i][position];
+			}
 			
-			return ["M", "R", "H", "A", "M", "M", "E", "R"];
+			return row;
 		}
 		
 		function changeSize()
@@ -148,8 +156,8 @@
 		}
 		
 		window.addEventListener('load', event => {	
-				createTable();
 				loadDoc();
+				createTable();	
 		});
     </script>
 </html>
