@@ -5,24 +5,22 @@
     <title>Depressing Table</title>
     <link rel="stylesheet" href="./style.css">
 </head>
-
 <body>
     <div id="main-title">
         <h1> Poverty in American School Districts</h1>
         <p> <em> Brought to you by the US Census Bureau </em></p>
     </div>
-    
 	<div id="test">
 	</div>
     <form id="search" onSubmit="myFunction()">
-        <lable for="search-column">In Column:</lable>
+        <label for="search-column">In Column:</label>
         <select name="column" id="search-column">
             <option value="state">State</option>
             <option value="fips">State FIPS Code</option>
             <option value="dist-id">District ID</option>
             <!--Add remaining options-->
         </select>
-        <lable for="searchfor">Search for </lable>
+        <label for="searchfor">Search for </label>
         <input id="searchfor" type="text" />
         <select name="scope" id="search-scope">
             <option value="exact">Matches Exactly</option>
@@ -35,7 +33,10 @@
             <option value="25">25 Rows</option>
             <option value="50">50 Rows</option>
     </select>
+	
     </form>
+	<button class="buttons" onclick="nextPage()"> Show Next Page </button>
+	<button class="buttons" onclick="lastPage()"> Show Last Page </button>
   <table>
       <thead class="HEADER">
           <tr>
@@ -63,14 +64,11 @@
 		  -->
       </tbody>
   </table>
-    
-	<button class="buttons" onclick="nextPage()"> Show Next Page </button>
 </body>
     <script>
 		let table = document.getElementById("data-table");
 		let size = 10;
 		let topPos = 0;
-		
 		const information = {
 			state: [],
 			sCode: [],
@@ -82,7 +80,7 @@
 			povRate: []
 		};
 		const allInformation = [information.state, information.sCode, information.dID, information.name, information.totalPop, information.kidPop, information.povNum, information.povRate];
-	
+		
 		function loadDoc() {
 			const xhttp = new XMLHttpRequest();
 			xhttp.onload = function() {
@@ -90,7 +88,7 @@
 			}
 			xhttp.open("GET", "DATA.txt", false);
 			xhttp.send();
-		}
+		};
 		
 		function readFile(message) {
 			for (let i = 0; i<message.length; i++)
@@ -101,24 +99,37 @@
 				{
 					allInformation[j].push(info[j]);
 				}
-				allInformation[7][i] = (allInformation[6][i] / allInformation[5][i])*100;
+				allInformation[7][i] = ((allInformation[6][i] / allInformation[5][i])*100).toFixed(2);
 			}
-		}
+		};
 		
 		function nextPage()
 		{
+			if (topPos+size >= allInformation[0].length) {return;}
 			topPos += size;
 			DESTROY();
 			createTable();
-		}
+		};
+		
+		function lastPage()
+		{
+			if (topPos-size < 0) {topPos = 0;}else {topPos -= size;}
+			DESTROY();
+			createTable();
+		};
 		
         function createTable() {
 		    for (let times = 0; times<size; times++)
 			{
-				let row = table.insertRow(); //Insert new row
-				let allCells = getNextRow(topPos + times);
-				//Add 8 cells
-			
+				let position = topPos+times;
+				if (position >= allInformation[0].length)
+				{
+					return;
+				}
+				
+				let row = table.insertRow(); // Insert new row
+				let allCells = getNextRow(position);
+				// Add 8 cells
 				for (let i = 0; i<8; i++)
 				{
 					let cell = row.insertCell();
@@ -126,34 +137,34 @@
 					cell.innerHTML = allCells[i];
 				}
 			}
-			
-        }
+        };
 		
 		function DESTROY()
 		{
-			for (let i = 0; i<size; i++)
+			let rows = table.getElementsByTagName("tr").length;
+			
+			for (let i = 0; i<rows; i++)
 			{
 				table.deleteRow(0);
 			}
-		}
+		};
 		
 		function getNextRow(position) {
-			//Returns array, each index next cell
-			let row = ["", "", "", "", "", "", "", ""];
+			// Returns array, each index next cell
+			let row = [];
 			for (let i = 0; i<8; i++)
 			{
-				row[i] = allInformation[i][position];
+				row.push(allInformation[i][position]);
 			}
-			
 			return row;
-		}
+		};
 		
 		function changeSize()
 		{
 			DESTROY();
-			size = document.getElementById("table-size").value;
+			size = document.getElementById("table-size").value - 0;
 			createTable();
-		}
+		};
 		
 		window.addEventListener('load', event => {	
 				loadDoc();
