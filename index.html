@@ -33,14 +33,13 @@
             <option value="25">25 Rows</option>
             <option value="50">50 Rows</option>
     </select>
-	
     </form>
-	<button class="buttons" onclick="nextPage()"> Show Next Page </button>
 	<button class="buttons" onclick="lastPage()"> Show Last Page </button>
+	<button class="buttons" onclick="nextPage()"> Show Next Page </button>
   <table>
       <thead class="HEADER">
           <tr>
-              <th>State</th>
+              <a href="#" onclick="sortBy(0)"><th>State</th></a>
               <th>State FIPS Code</th>
               <th>District ID</th>
               <th>Name</th>
@@ -51,17 +50,6 @@
           </tr>
       </thead>
       <tbody id="data-table">
-          <!--<tr>
-              <td>AL</td>
-              <td>01</td>
-              <td>00190</td>
-              <td>Alabaster City School District</td>
-              <td>35,268</td>
-              <td>6,797</td>
-              <td>669</td>
-              <td>9.84%</td>
-          </tr>
-		  -->
       </tbody>
   </table>
 </body>
@@ -80,6 +68,31 @@
 			povRate: []
 		};
 		const allInformation = [information.state, information.sCode, information.dID, information.name, information.totalPop, information.kidPop, information.povNum, information.povRate];
+		
+		let displayInfo = []; 
+		
+		function sortNum(array)
+		{
+			const index = [];
+			
+			for (let i = 0; i<array.length; i++)
+			{
+				let smallIndex = 0;
+				
+				for (let j = 0; j<array.length; j++)
+				{
+					if (array[j] == -1) {continue;}
+					if (array[j] < array[smallest])
+					{
+						smallIndex = j;
+					}
+				}
+				index.push(smallIndex);
+				array[smallIndex] = -1;
+			}
+			
+			return index;
+		}
 		
 		function loadDoc() {
 			const xhttp = new XMLHttpRequest();
@@ -103,9 +116,39 @@
 			}
 		};
 		
+		function sortBy(category)
+		{
+		// 
+			switch(category)
+			{
+				case 0:
+					
+					break;
+				case 1:
+					displayInfo[1] = information.sCode.sort(function(a,b){return b-a;});
+					break;
+				case 2:
+					
+					break;
+				case 3:
+				
+					break;
+				case 4:
+				
+					break;
+				case 5:
+				
+					break;
+				case 6:
+					break;
+				case 7:
+					break;
+			}
+		}
+		
 		function nextPage()
 		{
-			if (topPos+size >= allInformation[0].length) {return;}
+			if (topPos+size >= displayInfo.length) {return;}
 			topPos += size;
 			DESTROY();
 			createTable();
@@ -122,7 +165,7 @@
 		    for (let times = 0; times<size; times++)
 			{
 				let position = topPos+times;
-				if (position >= allInformation[0].length)
+				if (position >= displayInfo[0].length)
 				{
 					return;
 				}
@@ -154,7 +197,7 @@
 			let row = [];
 			for (let i = 0; i<8; i++)
 			{
-				row.push(allInformation[i][position]);
+				row.push(displayInfo[i][position]);
 			}
 			return row;
 		};
@@ -168,6 +211,7 @@
 		
 		window.addEventListener('load', event => {	
 				loadDoc();
+				displayInfo = allInformation;
 				createTable();	
 		});
     </script>
