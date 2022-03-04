@@ -39,11 +39,11 @@
   <table>
       <thead class="HEADER">
           <tr>
-              <a href="#" onclick="sortBy(0)"><th>State</th></a>
+              <a href="javascript."><th>State</th></a>
               <th>State FIPS Code</th>
               <th>District ID</th>
               <th>Name</th>
-              <th>Total Population</th>
+              <a href="#" onclick="sortBy(4)"><th>Total Population</th></a>
               <th>School-aged population (5-17)</th>
               <th>School-aged children in poverty</th>
               <th>Poverty Rate</th>
@@ -57,42 +57,20 @@
 		let table = document.getElementById("data-table");
 		let size = 10;
 		let topPos = 0;
-		const information = {
-			state: [],
-			sCode: [],
-			dID: [],
-			name: [],
-			totalPop: [],
-			kidPop: [],
-			povNum: [],
-			povRate: []
-		};
-		const allInformation = [information.state, information.sCode, information.dID, information.name, information.totalPop, information.kidPop, information.povNum, information.povRate];
-		
-		let displayInfo = []; 
-		
-		function sortNum(array)
+		function Row(st, sc, di, n, tp, kp, pn, pr)
 		{
-			const index = [];
-			
-			for (let i = 0; i<array.length; i++)
-			{
-				let smallIndex = 0;
-				
-				for (let j = 0; j<array.length; j++)
-				{
-					if (array[j] == -1) {continue;}
-					if (array[j] < array[smallest])
-					{
-						smallIndex = j;
-					}
-				}
-				index.push(smallIndex);
-				array[smallIndex] = -1;
-			}
-			
-			return index;
-		}
+			this.state = st; 
+			this.sCode = parseInt(sc); 
+			this.dID = parseInt(di);
+			this.name = n; 
+			this.totalPop = parseInt(tp); 
+			this.kidPop = parseInt(kp); 
+			this.povNum = parseInt(pn); 
+			this.povRate = parseFloat(pr);
+		};
+
+		const allInformation = [];
+		let displayInfo = []; 
 		
 		function loadDoc() {
 			const xhttp = new XMLHttpRequest();
@@ -107,12 +85,10 @@
 			for (let i = 0; i<message.length; i++)
 			{
 				let info = message[i].split(",");
+				let pr = info[6]/info[5] * 100;
 				
-				for (let j = 0; j<info.length; j++)
-				{
-					allInformation[j].push(info[j]);
-				}
-				allInformation[7][i] = ((allInformation[6][i] / allInformation[5][i])*100).toFixed(2);
+				const r = new Row(info[0], info[1], info[2], info[3], info[4], info[5], info[6], pr.toFixed(2));
+				allInformation.push(r);
 			}
 		};
 		
@@ -125,7 +101,7 @@
 					
 					break;
 				case 1:
-					displayInfo[1] = information.sCode.sort(function(a,b){return b-a;});
+					//displayInfo[1] = information.sCode.sort(function(a,b){return b-a;});
 					break;
 				case 2:
 					
@@ -134,7 +110,9 @@
 				
 					break;
 				case 4:
-				
+					//setDisplay(sortNum(information.totalPop));
+					DESTROY();
+					createTable();
 					break;
 				case 5:
 				
@@ -165,13 +143,14 @@
 		    for (let times = 0; times<size; times++)
 			{
 				let position = topPos+times;
-				if (position >= displayInfo[0].length)
+				if (position >= displayInfo.length)
 				{
 					return;
 				}
 				
 				let row = table.insertRow(); // Insert new row
-				let allCells = getNextRow(position);
+				let r = displayInfo[position];
+				let allCells = [r.state, r.sCode, r.dID, r.name, r.totalPop, r.kidPop, r.povNum, r.povRate];
 				// Add 8 cells
 				for (let i = 0; i<8; i++)
 				{
@@ -190,16 +169,6 @@
 			{
 				table.deleteRow(0);
 			}
-		};
-		
-		function getNextRow(position) {
-			// Returns array, each index next cell
-			let row = [];
-			for (let i = 0; i<8; i++)
-			{
-				row.push(displayInfo[i][position]);
-			}
-			return row;
 		};
 		
 		function changeSize()
