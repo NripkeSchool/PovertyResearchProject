@@ -36,22 +36,24 @@
     </form>
 	<button class="buttons" onclick="lastPage()"> Show Last Page </button>
 	<button class="buttons" onclick="nextPage()"> Show Next Page </button>
+	<button onclick="searchBy('exact', 0)"> Search!!!</button>
   <table>
       <thead class="HEADER">
           <tr>
-              <a href="javascript."><th>State</th></a>
-              <th>State FIPS Code</th>
-              <th>District ID</th>
-              <th>Name</th>
-              <a href="#" onclick="sortBy(4)"><th>Total Population</th></a>
-              <th>School-aged population (5-17)</th>
-              <th>School-aged children in poverty</th>
-              <th>Poverty Rate</th>
+              <th onclick="sortBy(0)">State</th>
+              <th onclick="sortBy(1)">State FIPS Code</th>
+              <th onclick="sortBy(2)">District ID</th>
+              <th onclick="sortBy(3)">Name</th>
+              <th onclick="sortBy(4)">Total Population</th>
+              <th onclick="sortBy(5)">School-aged population (5-17)</th>
+              <th onclick="sortBy(6)">School-aged children in poverty</th>
+              <th onclick="sortBy(7)">Poverty Rate</th>
           </tr>
       </thead>
       <tbody id="data-table">
       </tbody>
   </table>
+  
 </body>
     <script>
 		let table = document.getElementById("data-table");
@@ -70,7 +72,7 @@
 		};
 
 		const allInformation = [];
-		let displayInfo = []; 
+		let displayInfo = [];
 		
 		function loadDoc() {
 			const xhttp = new XMLHttpRequest();
@@ -87,6 +89,10 @@
 				let info = message[i].split(",");
 				let pr = info[6]/info[5] * 100;
 				
+				if (info[5] == 0)
+				{
+					pr = 0.00;
+				}
 				const r = new Row(info[0], info[1], info[2], info[3], info[4], info[5], info[6], pr.toFixed(2));
 				allInformation.push(r);
 			}
@@ -94,35 +100,74 @@
 		
 		function sortBy(category)
 		{
-		// 
 			switch(category)
 			{
 				case 0:
-					
+					displayInfo.sort(function(a,b){return a.state.localeCompare(b.state);});
+					DESTROY();
+					createTable();
 					break;
 				case 1:
-					//displayInfo[1] = information.sCode.sort(function(a,b){return b-a;});
+					displayInfo.sort(function(a,b){return a.sCode-b.sCode;});
+					DESTROY();
+					createTable();
 					break;
 				case 2:
-					
+					displayInfo.sort(function(a,b){return a.dID-b.dID;});
+					DESTROY();
+					createTable();
 					break;
 				case 3:
-				
+					displayInfo.sort(function(a,b){return a.name.localeCompare(b.name);});
+					DESTROY();
+					createTable();
 					break;
 				case 4:
-					//setDisplay(sortNum(information.totalPop));
+					displayInfo.sort(function(a,b){return a.totalPop-b.totalPop;});
 					DESTROY();
 					createTable();
 					break;
 				case 5:
-				
+					displayInfo.sort(function(a,b){return a.kidPop-b.kidPop;});
+					DESTROY();
+					createTable();
 					break;
 				case 6:
+					displayInfo.sort(function(a,b){return a.povNum-b.povNum;});
+					DESTROY();
+					createTable();
 					break;
 				case 7:
+					displayInfo.sort(function(a,b){return a.povRate-b.povRate;});
+					DESTROY();
+					createTable();
 					break;
 			}
 		}
+		
+		function searchBy(restrict, category)
+		{
+			let txt = document.getElementById("searchfor").innerHTML;
+			if (restrict == "exact")
+			{
+				switch(category)
+				{
+					case 0:
+						displayInfo = allInformation.filter(function() {return allInformation.state == txt;})
+						topPos = 0;
+						DESTROY();
+						createTable();
+						break;
+				}
+			}else if (restrict == "contains")
+			{
+			
+			}else {
+			
+			}
+		}
+		
+		
 		
 		function nextPage()
 		{
