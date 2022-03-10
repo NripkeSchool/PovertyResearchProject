@@ -15,19 +15,25 @@
     <form id="search" onSubmit="myFunction()">
         <label for="search-column">In Column:</label>
         <select name="column" id="search-column">
-            <option value="state">State</option>
-            <option value="fips">State FIPS Code</option>
-            <option value="dist-id">District ID</option>
+            <option value=0>State</option>
+            <option value=1>State FIPS Code</option>
+            <option value=2>District ID</option>
+			<option value=3>Name</option>
+            <option value=4>Total Population</option>
+            <option value=5>School-aged population (5-17)</option>
+			<option value=6>School-aged children in poverty</option>
+            <option value=7>Poverty Rate</option>
             <!--Add remaining options-->
         </select>
         <label for="searchfor">Search for </label>
         <input id="searchfor" type="text" />
         <select name="scope" id="search-scope">
-            <option value="exact">Matches Exactly</option>
-            <option value="contains">Contains</option>
-            <option value="not-conains">Does Not Contain</option>
+            <option value=0>Matches Exactly</option>
+            <option value=1>Contains</option>
+            <option value=2>Does Not Contain</option>
+			<option value=3>Greater Than</option>
+            <option value=4>Less Than</option>
         </select>
-    <input type="submit" id="submit-search" />
 	<select name="Table Size" id="table-size" onchange="changeSize()">
             <option value="10">10 Rows</option>
             <option value="25">25 Rows</option>
@@ -36,7 +42,7 @@
     </form>
 	<button class="buttons" onclick="lastPage()"> Show Last Page </button>
 	<button class="buttons" onclick="nextPage()"> Show Next Page </button>
-	<button onclick="searchBy('exact', 0)"> Search!!!</button>
+	<button class="buttons" onclick="searchBy()"> Search</button>
   <table>
       <thead class="HEADER">
           <tr>
@@ -69,6 +75,7 @@
 			this.kidPop = parseInt(kp); 
 			this.povNum = parseInt(pn); 
 			this.povRate = parseFloat(pr);
+			this.allInfo = [this.state, this.sCode, this.dID, this.name, this.totalPop, this.kidPop, this.povNum, this.povRate];
 		};
 
 		const allInformation = [];
@@ -145,29 +152,28 @@
 			}
 		}
 		
-		function searchBy(restrict, category)
+		function searchBy()
 		{
-			let txt = document.getElementById("searchfor").innerHTML;
-			if (restrict == "exact")
-			{
-				switch(category)
-				{
-					case 0:
-						displayInfo = allInformation.filter(function() {return allInformation.state == txt;})
-						topPos = 0;
-						DESTROY();
-						createTable();
-						break;
-				}
-			}else if (restrict == "contains")
-			{
+			let txt = document.getElementById("searchfor").value;
+			let category = document.getElementById("search-column").value;
+			let restrict = document.getElementById("search-scope").value;
 			
-			}else {
-			
-			}
+			const searches = [(currentValue) => currentValue.allInfo[category] == txt, 
+							  (currentValue) => currentValue.allInfo[category].includes(txt),
+							  (currentValue) => !currentValue.allInfo[category].includes(txt),
+							  (currentValue) => currentValue.allInfo[category] > txt,
+							  (currentValue) => currentValue.allInfo[category] < txt];
+			displayInfo = allInformation.filter(searches[restrict])
+			topPos = 0;
+			DESTROY();
+			createTable();
 		}
 		
-		
+		function refresh()
+		{
+			DESTROY();
+			createTable();
+		}
 		
 		function nextPage()
 		{
